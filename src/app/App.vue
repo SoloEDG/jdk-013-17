@@ -48,7 +48,7 @@ async function fullscreen() {
           :class="{ active: w.tab.value === 'journal' }"
           @click="w.tab.value = 'journal'"
         >
-          探索手记 <span>{{ w.journal.entries.value.length }}</span></button
+          探索手记 <span>{{ w.journal.storyCount.value }}</span></button
         ><button @click="about = true">
           关于本片 <ArrowUpRight :size="13" />
         </button>
@@ -108,7 +108,10 @@ async function fullscreen() {
             ><HotspotDetail
               v-if="w.discovery.detail.value && !w.branch.personId.value"
               :hotspot="w.discovery.detail.value"
-              :saved="w.journal.has(w.discovery.detail.value.id)"
+              :count="w.journal.countFor(w.discovery.detail.value.id)"
+              :duplicate="w.duplicate.value"
+              :draft="w.draft.value"
+              :message="w.saveMessage.value"
               @close="w.discovery.close()"
               @save="w.save()"
               @interview="
@@ -121,6 +124,7 @@ async function fullscreen() {
               :playback="w.playback"
               :disabled="!!w.branch.personId.value"
               @reset="w.camera.reset()"
+              @seek="w.dispatch({ type: 'seek', time: $event })"
               @fullscreen="fullscreen"
             />
             <p v-if="fullError" role="status">{{ fullError }}</p>
@@ -151,12 +155,15 @@ async function fullscreen() {
               </button>
             </div>
             <div class="discovery-count">
-              <span>已收集的故事</span
+              <span>已收藏的故事</span
               ><b
                 >{{
-                  w.journal.entries.value.length.toString().padStart(2, "0")
+                  w.journal.storyCount.value.toString().padStart(2, "0")
                 }}
                 <em>/ 06</em></b
+              >
+              <small class="discovery-total"
+                >共 {{ w.journal.discoveryCount.value }} 次发现</small
               >
             </div>
             <button class="journal-link" @click="w.tab.value = 'journal'">

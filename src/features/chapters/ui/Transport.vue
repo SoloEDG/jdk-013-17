@@ -11,7 +11,7 @@ import { timecode } from "../../../shared/format";
 import { chapterProgress } from "../lib/timeline";
 import type { Playback } from "../model/playback";
 defineProps<{ playback: Playback; disabled: boolean }>();
-defineEmits<{ reset: []; fullscreen: [] }>();
+defineEmits<{ reset: []; fullscreen: []; seek: [time: number] }>();
 </script>
 <template>
   <div class="transport">
@@ -31,7 +31,9 @@ defineEmits<{ reset: []; fullscreen: [] }>();
       step="0.1"
       :value="playback.state.time"
       :disabled="disabled"
-      @input="playback.seek(Number(($event.target as HTMLInputElement).value))"
+      @input="
+        $emit('seek', Number(($event.target as HTMLInputElement).value))
+      "
     />
     <div class="controls">
       <button

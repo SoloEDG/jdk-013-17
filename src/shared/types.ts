@@ -47,6 +47,29 @@ export interface Entry {
   title: string;
   note: string;
   createdAt: number;
+  updatedAt?: number;
+  /**
+   * Which mainline visit produced this discovery. A second click during the
+   * same visit is a duplicate; after navigating, rewinding or revisiting, a
+   * new visit id is issued and the same spot may be saved again.
+   */
+  visitId?: string;
+}
+/**
+ * A story is the shared layer of one hotspot. Its discoveries stay separate:
+ * each one keeps the camera, mainline time and note that belonged to that visit.
+ */
+export interface StoryGroup {
+  hotspotId: string;
+  title: string;
+  chapterId: string;
+  chapterTitle: string;
+  kind: Hotspot["kind"] | null;
+  summary: string;
+  entries: Entry[];
+  count: number;
+  firstAt: number;
+  lastAt: number;
 }
 export type Command =
   | { type: "chapter"; id: string }
